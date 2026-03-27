@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0f1e;
+  --surface: #0f172a;
+  --surface2: #1e293b;
+  --surface3: #334155;
+  --accent: #0ea5e9;
+  --accent2: #38bdf8;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: rgba(148,163,184,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Custom components */
+@layer components {
+  .card {
+    @apply rounded-2xl border bg-surface-800 p-6;
+    border-color: var(--border);
+  }
+
+  .btn-primary {
+    @apply flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    @apply flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--accent); background: rgba(14,165,233,0.08); }
+
+  .btn-danger {
+    @apply flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200;
+    background: rgba(239,68,68,0.15);
+    color: var(--danger);
+    border: 1px solid rgba(239,68,68,0.25);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+
+  .input {
+    @apply w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+  .input::placeholder { color: var(--text-muted); }
+
+  .label { @apply block text-xs font-semibold mb-1.5; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+  }
+  .badge-green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .badge-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .badge-blue { background: rgba(14,165,233,0.15); color: #0ea5e9; }
+  .badge-gray { background: rgba(148,163,184,0.15); color: #94a3b8; }
+
+  .table-row {
+    @apply border-b transition-colors duration-150;
+    border-color: var(--border);
+  }
+  .table-row:hover { background: rgba(14,165,233,0.04); }
+
+  .stat-card {
+    @apply card relative overflow-hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .page-title {
+    @apply text-2xl font-bold tracking-tight;
+  }
+
+  .section-title {
+    @apply text-sm font-bold uppercase tracking-widest mb-4;
+    color: var(--text-muted);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { transform: translateX(-16px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fade { animation: fadeIn 0.35s ease forwards; }
+.animate-slide { animation: slideIn 0.3s ease forwards; }
+
+/* Modal overlay */
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+.modal-box {
+  @apply card w-full max-w-lg max-h-[90vh] overflow-y-auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+/* Glow effect */
+.glow { box-shadow: 0 0 20px rgba(14,165,233,0.3); }
+
+/* No data */
+.empty-state {
+  @apply flex flex-col items-center justify-center py-16 gap-3;
+  color: var(--text-muted);
+}

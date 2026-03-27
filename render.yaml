@@ -1,0 +1,54 @@
+# render.yaml — Render.com FREE TIER deploy konfigürasyonu
+# Projeyi GitHub'a push ettikten sonra:
+# render.com/dashboard → "New" → "Blueprint" → repoyu seç → Apply
+
+services:
+  # ─── Backend (FastAPI) ──────────────────────────────────────────────────────
+  - type: web
+    name: apartman-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: apartman-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: UPLOAD_DIR
+        value: /tmp/uploads
+
+  # ─── Frontend (React/Vite → Static Site) ───────────────────────────────────
+  - type: web
+    name: apartman-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: apartman-backend
+          type: web
+          property: host
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# ─── Ücretsiz PostgreSQL veritabanı ────────────────────────────────────────
+databases:
+  - name: apartman-db
+    plan: free
+    databaseName: apartman
+    user: apartman
