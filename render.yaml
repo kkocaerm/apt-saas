@@ -1,9 +1,8 @@
-# render.yaml — Render.com FREE TIER deploy konfigürasyonu
-# Projeyi GitHub'a push ettikten sonra:
-# render.com/dashboard → "New" → "Blueprint" → repoyu seç → Apply
+# render.yaml — Render.com FREE TIER
+# New → Blueprint → repoyu seç → Apply
 
 services:
-  # ─── Backend (FastAPI) ──────────────────────────────────────────────────────
+  # ─── Backend (FastAPI) ────────────────────────────────────────────────────
   - type: web
     name: apartman-backend
     runtime: python
@@ -23,7 +22,9 @@ services:
       - key: UPLOAD_DIR
         value: /tmp/uploads
 
-  # ─── Frontend (React/Vite → Static Site) ───────────────────────────────────
+  # ─── Frontend (Static Site) ───────────────────────────────────────────────
+  # ⚠️  VITE_API_URL'yi kaldırdık — artık public/config.js kullanıyoruz.
+  # Backend URL'ini değiştirmek için sadece config.js dosyasını düzenleyin.
   - type: web
     name: apartman-frontend
     runtime: static
@@ -31,12 +32,6 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     pullRequestPreviewsEnabled: false
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          name: apartman-backend
-          type: web
-          property: host
     headers:
       - path: /*
         name: Cache-Control
@@ -46,7 +41,7 @@ services:
         source: /*
         destination: /index.html
 
-# ─── Ücretsiz PostgreSQL veritabanı ────────────────────────────────────────
+# ─── Ücretsiz PostgreSQL ──────────────────────────────────────────────────
 databases:
   - name: apartman-db
     plan: free
